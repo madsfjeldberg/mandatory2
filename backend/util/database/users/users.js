@@ -1,4 +1,5 @@
 import { client, testConnection } from "../db.js";
+import { ObjectId } from "mongodb";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -15,9 +16,19 @@ const getUsers = async () => {
   }
 }
 
+const getUser = async (id) => {
+  testConnection();
+  id = ObjectId.createFromHexString(id)
+  try {
+    const user = await db.collection("users").findOne({ _id: id});
+    return user;
+  } catch (e) {
+    throw new Error(`Failed to get user: ${e.message}`);
+  }
+}
+
 const addUser = async (username, email, password) => {
   testConnection();
-  
   try {
     return await db.collection("users").insertOne({ username: username, email: email, password: password });
   } catch (e) {
@@ -25,4 +36,4 @@ const addUser = async (username, email, password) => {
   }
 }
 
-export { getUsers, addUser };
+export { getUsers, getUser, addUser };
