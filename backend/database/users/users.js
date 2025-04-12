@@ -41,19 +41,35 @@ const addUser = async (username, email, password) => {
   }
 }
 
-
-const deleteUser = async (id) => {
+const editUser = async (id, username, email, password) => {
   testConnection();
-  id = ObjectId.createFromHexString(id);
   try {
-    const deletedUser = await User.findByIdAndDelete(id);
-    if (!deletedUser) {
-      throw new Error(`User with id ${id} not found.`);
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username },
+      { username: username, email: email, password: password },
+      { new: true }
+    );
+    if (!updatedUser) {
+      throw new Error(`User with username ${username} not found.`);
     }
-    return deletedUser;
+    return updatedUser;
   } catch (e) {
-    throw new Error(`Failed to delete user: ${e.message}`);
+    throw new Error(`Failed to update user: ${e.message}`);
   }
 }
 
-export { getUsers, getUser, addUser, deleteUser };
+
+// const deleteUser = async (username) => {
+//   testConnection();
+//   try {
+//     const deletedUser = await User.findByUsernameAndDelete(username);
+//     if (!deletedUser) {
+//       throw new Error(`User with username ${username} not found.`);
+//     }
+//     return deletedUser;
+//   } catch (e) {
+//     throw new Error(`Failed to delete user: ${e.message}`);
+//   }
+// }
+
+export { getUsers, getUser, addUser, editUser };
