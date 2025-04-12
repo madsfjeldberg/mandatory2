@@ -1,26 +1,23 @@
-import { client, testConnection } from "../db.js";
+import { testConnection } from "../db.js";
 import { ObjectId } from "mongodb";
 import dotenv from 'dotenv';
+import User from "../models/User.js";
 dotenv.config();
 
-const db = client.db(process.env.DB_NAME);
 
 const getUsers = async () => {
-  testConnection();
   try {
-    const users = await db.collection("users").find({}).toArray();
-    console.log(users);
+    const users = await User.find().lean();
     return users;
   } catch (e) {
     throw new Error(`Failed to get users: ${e.message}`);
   }
-}
+};
 
-const getUser = async (id) => {
+const getUser = async (username) => {
   testConnection();
-  id = ObjectId.createFromHexString(id)
   try {
-    const user = await db.collection("users").findOne({ _id: id});
+    const user = await User.findOne({ username: username });
     return user;
   } catch (e) {
     throw new Error(`Failed to get user: ${e.message}`);
@@ -30,17 +27,30 @@ const getUser = async (id) => {
 const addUser = async (username, email, password) => {
   testConnection();
   try {
-    return await db.collection("users").insertOne({ username: username, email: email, password: password });
+    const existingUser = await User.find({ username: username });
+    if (existingUser.length > 0) {
+      throw new Error(`User with username ${username} already exists.`);
+    }
+    return await User.create({
+      username: username,
+      email: email,
+      password: password,
+    });
   } catch (e) {
     throw new Error(`Failed to add user: ${e.message}`);
   }
 }
 
+
 const deleteUser = async (id) => {
   testConnection();
   id = ObjectId.createFromHexString(id);
   try {
-    return await db.collection("users").deleteOne({ _id: id });
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new Error(`User with id ${id} not found.`);
+    }
+    return deletedUser;
   } catch (e) {
     throw new Error(`Failed to delete user: ${e.message}`);
   }

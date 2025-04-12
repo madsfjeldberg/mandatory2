@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { getUsers, addUser, getUser, deleteUser } from "../util/database/users/users.js";
+import {
+  getUsers,
+  addUser,
+  getUser,
+  deleteUser,
+} from "../database/users/users.js";
 
 const router = Router();
 
@@ -15,7 +20,6 @@ router.get("/api/users/:id", async (req, res) => {
   const user = await getUser(id);
   res.status(200).json(user);
 });
-
 
 router.post("/api/users", async (req, res) => {
   const { username, email, password } = req.body;

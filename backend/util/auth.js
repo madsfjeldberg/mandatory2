@@ -10,7 +10,7 @@ const hashPassword = async (password) => {
   try {
     const hashedPassword = await bcrypt.hash(password, SALT);
     return hashedPassword;
-  } catch (error) {
+  } catch (e) {
     throw new Error('Error hashing password');
   }
 }
@@ -19,8 +19,8 @@ const verifyPassword = async (password, hashedPassword) => {
   try {
     const isMatch = await bcrypt.compare(password, hashedPassword);
     return isMatch;
-  } catch (error) {
-    throw new Error('Error verifying password');
+  } catch (e) {
+    throw new Error(`Error verifying password: ${e.message}`);
   }
 }
 
@@ -35,7 +35,7 @@ const decodeToken = (token) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     return decoded;
-  } catch (error) {
+  } catch (e) {
     throw new Error('Invalid token');
   }
 }
