@@ -15,4 +15,14 @@ const getUsers = async () => {
   }
 }
 
-export { getUsers };
+const addUser = async (username, email, password) => {
+  testConnection();
+  
+  try {
+    return await db.collection("users").insertOne({ username: username, email: email, password: password });
+  } catch (e) {
+    throw new Error(`Failed to add user: ${e.message}`)
+  }
+}
+
+export { getUsers, addUser };
