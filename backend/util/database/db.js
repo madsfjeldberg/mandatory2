@@ -26,6 +26,12 @@ async function connectDB() {
   }
 }
 
+async function testConnection() {
+    if (!client.topology?.isConnected()) {
+      throw new Error('Database connection not established.');
+    }
+}
+
 // Only close on application shutdown
 process.on('SIGINT', async () => {
   await client.close();
@@ -33,4 +39,4 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-export { client, connectDB };
+export { client, connectDB, testConnection };
