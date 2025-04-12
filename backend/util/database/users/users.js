@@ -12,7 +12,7 @@ const getUsers = async () => {
     console.log(users);
     return users;
   } catch (e) {
-    throw new Error(`Failed to get users: ${e.message}`)
+    throw new Error(`Failed to get users: ${e.message}`);
   }
 }
 
@@ -32,8 +32,18 @@ const addUser = async (username, email, password) => {
   try {
     return await db.collection("users").insertOne({ username: username, email: email, password: password });
   } catch (e) {
-    throw new Error(`Failed to add user: ${e.message}`)
+    throw new Error(`Failed to add user: ${e.message}`);
   }
 }
 
-export { getUsers, getUser, addUser };
+const deleteUser = async (id) => {
+  testConnection();
+  id = ObjectId.createFromHexString(id);
+  try {
+    return await db.collection("users").deleteOne({ _id: id });
+  } catch (e) {
+    throw new Error(`Failed to delete user: ${e.message}`);
+  }
+}
+
+export { getUsers, getUser, addUser, deleteUser };
