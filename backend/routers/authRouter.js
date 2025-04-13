@@ -1,8 +1,17 @@
 import { Router } from "express";
 import auth from "../util/auth.js";
 import { addUser, getUser, editUser } from "../database/users/users.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = Router();
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production", // Set to true in production
+  sameSite: process.env.NODE_ENV === "production" ? "None" : "lax", // Set to None in production for cross-site cookies
+  maxAge: 3600000, // 1 hour
+}
 
 router.post("/auth/register", async (req, res) => {
   // extract user data from request body
@@ -23,10 +32,17 @@ router.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    res.status(400).send({ message: "All fields are required" });
+    console.log("All fields are required");
+    return res.status(400).send({ message: "All fields are required" });
   }
 
   const dbUser = await getUser(username);
+  console.log(dbUser);
+
+  if (!dbUser) {
+    console.log("User not found");
+    return res.status(401).send({ message: "Wrong username or password." });
+  }
   const isValidPassword = await auth.verifyPassword(password, dbUser.password);
 
   try {
@@ -34,17 +50,14 @@ router.post("/auth/login", async (req, res) => {
       const token = auth.generateToken(dbUser);
       res
         .status(200)
-        .cookie("jwt", token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "strict",
-          maxAge: 3600000, // 1 hour
-        })
+        .cookie("jwt", token, cookieOptions)
         .json({
           message: "Login successful.",
+          status: 200,
         });
     } else {
-      res.status(401).send({ message: "Wrong username or password." });
+      console.log("Wrong username or password.");
+      return res.status(401).send({ message: "Wrong username or password." });
     }
   } catch (e) {
     res
@@ -52,6 +65,7 @@ router.post("/auth/login", async (req, res) => {
       .send({ message: "An error occurred during login.", error: e.message });
   }
 });
+
 
 router.get("/auth/logout", (req, res) => {
   res

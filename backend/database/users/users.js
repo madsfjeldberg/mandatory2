@@ -1,5 +1,4 @@
 import { testConnection } from "../db.js";
-import { ObjectId } from "mongodb";
 import dotenv from 'dotenv';
 import User from "../models/User.js";
 dotenv.config();
