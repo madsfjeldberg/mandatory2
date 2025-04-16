@@ -3,7 +3,6 @@
   import { Button, Checkbox, Input, Label } from 'flowbite-svelte';
   import { auth } from '../../lib/services/auth';
   import { z } from 'zod';
-	import { redirect } from '@sveltejs/kit';
 	import { goto } from '$app/navigation';
   import toast from 'svelte-french-toast';
 
@@ -63,7 +62,7 @@
   <Register href="/">
     <h1 class="font-bold text-3xl text-center dark:text-gray-200">Login to your account</h1>
     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-      <form class="flex flex-col space-y-6" action="POST" on:submit={handleSubmit}>
+      <form class="flex flex-col space-y-6" on:submit={handleSubmit}>
         {#if errors.form}
           <p class="text-red-500 text-sm">{errors.form}</p>
         {/if}

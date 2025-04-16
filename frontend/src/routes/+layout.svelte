@@ -3,11 +3,18 @@
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode } from 'flowbite-svelte';
   import { Footer, FooterBrand, FooterCopyright, FooterIcon, FooterLink, FooterLinkGroup } from 'flowbite-svelte';
   import toast, { Toaster } from 'svelte-french-toast';
-  
-
+  import { isAuthenticated } from '$lib/stores/authStore';
+  import { auth } from '$lib/services/auth.js';
   import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
   const year = new Date().getFullYear();
+
+  const handleLogout = async () => {
+    await auth.logout();
+    toast.success('Logged out successfully');
+    goto('/');
+  };
 
 	let { children } = $props();
 </script>
@@ -23,10 +30,15 @@
     <NavHamburger />
   </div>
   <NavUl class="flex md:order-1 md:ml-auto">
-    <NavLi href="/">Home</NavLi>
-
+    
+    <!-- Conditionally render navbar -->
+    {#if $isAuthenticated}
     <NavLi href="/dashboard">Dashboard</NavLi>
+    <NavLi class="cursor-pointer" on:click={handleLogout}>Logout</NavLi>
+    {:else}
+    <NavLi href="/">Home</NavLi>
     <NavLi href="/login">Login</NavLi>
+    {/if}
   </NavUl>
 </Navbar>
 
