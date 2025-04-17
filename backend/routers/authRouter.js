@@ -24,8 +24,14 @@ router.post("/auth/register", async (req, res) => {
 
   const hashedPassword = await auth.hashPassword(password);
 
-  addUser(username, email, hashedPassword);
-  res.status(200).send({ message: "User registered successfully" });
+  let newUser = addUser(username, email, hashedPassword);
+  const token = auth.generateToken(newUser);
+  res
+    .status(200)
+    .cookie("jwt", token, cookieOptions)
+    .json({ message: "User Registered successful.", status: 200 });
+
+  // res.status(200).send({ status: 200, message: "User registered successfully" });
 });
 
 router.post("/auth/login", async (req, res) => {

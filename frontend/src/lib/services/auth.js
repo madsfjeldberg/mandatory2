@@ -21,6 +21,24 @@ const login = async (username, password) => {
   return data;
 }
 
+const register = async (username, email, password) => {
+  const response = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ username, email, password })
+  });
+  if (!response.ok) {
+    throw new Error('Register failed');
+  }
+
+  isAuthenticated.set(true);
+  const data = await response.json();
+  return data;
+}
+
 const logout = async () => {
   const response = await fetch(`${BASE_URL}/logout`, {
     method: 'GET',
@@ -42,5 +60,6 @@ const logout = async () => {
 
 export const auth = {
   login,
+  register,
   logout
 };
