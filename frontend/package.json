@@ -30,6 +30,8 @@
 		"vite": "^6.2.5"
 	},
 	"dependencies": {
+		"dotenv": "^16.5.0",
+		"jsonwebtoken": "^9.0.2",
 		"svelte-french-toast": "^1.2.0",
 		"zod": "^3.24.2"
 	}

@@ -3,4 +3,4 @@
 </script>
 
 
-<h1>Home</h1>
+<h1 class="font-bold text-3xl text-center dark:text-gray-200">Home</h1>

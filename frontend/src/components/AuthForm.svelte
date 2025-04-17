@@ -6,7 +6,12 @@
   import { goto } from '$app/navigation';
   import toast from 'svelte-french-toast';
 
-  let { loginMode,toggleMode } = $props();
+  // state to handle switching between login/register
+  let loginMode = $state(true);
+
+  const toggleMode = () => {
+    loginMode = !loginMode;
+  }
 
   let errors = {
     username: '',
@@ -53,16 +58,13 @@
         RegisterRequest.parse({ username, email, password});
         response = await auth.register(username, email, password);
       }
-      console.log("hello??")
       console.log("response: ", response)
       if (response.status === 200) {
-        console.log("200")
         if (loginMode) {
           await toast.success('Login successful!');
         } else {
           await toast.success('Registration successful!');
         }
-        console.log("redirect");
         await goto('/dashboard');
         
       } else {

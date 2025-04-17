@@ -6,6 +6,7 @@
   // this receives data from +layout.server.js
   export let data;
 
+  // on mount, if user is authenticated, 
   onMount(() => {
     if (data.authenticated) {
       isAuthenticated.set(true);
