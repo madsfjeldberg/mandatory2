@@ -15,15 +15,21 @@ This project demonstrates a full-stack authentication system using SvelteKit for
 │   │   └── hooks.server.js           # Server-side auth middleware
 │   └── components/
 │       └── AuthForm.svelte           # Login/Register form component
-├── backend/           # Express server
-│   ├── database/     # Database related code
-│   │   ├── models/User.js           # Mongoose user model
-│   │   └── users/users.js           # User database operations
-│   ├── routers/
-│   │   └── authRouter.js            # Authentication routes
-│   └── util/
-│       ├── auth.js                  # JWT and password utilities
-│       └── cors.js                  # CORS configuration
+│
+└── backend/           # Express server
+    ├── database/      # Database related code
+    │   ├── models/User.js           # Mongoose user model
+    │   ├── users/users.js           # User database operations
+    │   └── db.js                    # MongoDB connection
+    ├── routers/
+    │   └── authRouter.js            # Authentication routes
+    ├── util/
+    │   ├── auth.js                  # JWT and password utilities
+    │   ├── cors.js                  # CORS configuration
+    │   ├── logger.js                # Logger utility 
+    │   └── rateLimit.js             # Rate limiting middleware
+    │
+    └── app.js                       # Express application setup 
 ```
 
 ## Authentication Flow
