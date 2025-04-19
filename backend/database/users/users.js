@@ -23,12 +23,26 @@ const getUser = async (username) => {
   }
 }
 
+const getUserByEmail = async (email) => {
+  testConnection();
+  try {
+    const user = await User.findOne({ email: email });
+    return user;
+  } catch (e) {
+    throw new Error(`Failed to get user by email: ${e.message}`);
+  }
+}
+
 const addUser = async (username, email, password) => {
   testConnection();
   try {
     const existingUser = await User.find({ username: username });
     if (existingUser.length > 0) {
       throw new Error(`User with username ${username} already exists.`);
+    }
+    const existingEmail = await getUserByEmail(email);
+    if (existingEmail) {
+      throw new Error(`User with email ${email} already exists.`);
     }
     return await User.create({
       username: username,
@@ -71,4 +85,4 @@ const editUser = async (id, username, email, password) => {
 //   }
 // }
 
-export { getUsers, getUser, addUser, editUser };
+export { getUsers, getUser, getUserByEmail, addUser, editUser };

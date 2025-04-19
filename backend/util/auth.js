@@ -26,7 +26,7 @@ const verifyPassword = async (password, hashedPassword) => {
 
 const generateToken = (user) => {
   const now = Math.floor(Date.now() / 1000); // Current time in seconds
-  const exp = now + 60; // Exactly 60 seconds from now
+  const exp = now + 3600; // Exactly 3600 seconds / 1 hour from now
 
   const token = jwt.sign({
     id: user.id,
@@ -34,18 +34,7 @@ const generateToken = (user) => {
     iat: now,
     exp: exp
   }, JWT_SECRET);
-  debugToken(token);
   return token;
-}
-
-const debugToken = (token) => {
-  const decoded = jwt.decode(token);
-  console.log({
-    issuedAt: new Date(decoded.iat * 1000).toLocaleString('da-DK'),
-    expiresAt: new Date(decoded.exp * 1000).toLocaleString('da-DK'),
-    timeUntilExpiry: decoded.exp - decoded.iat + ' seconds'
-  });
-  return decoded;
 }
 
 const decodeToken = (token) => {

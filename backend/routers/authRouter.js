@@ -1,6 +1,6 @@
 import { Router } from "express";
 import auth from "../util/auth.js";
-import { addUser, getUser, editUser } from "../database/users/users.js";
+import { addUser, getUser, getUserByEmail, editUser } from "../database/users/users.js";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -19,12 +19,21 @@ router.post("/auth/register", async (req, res) => {
 
   // validate user data
   if (!username || !email || !password) {
-    return res.status(400).send({ message: "All fields are required" });
+    return res.status(400).send({ status: 400, message: "All fields are required" });
   }
-
+  // check if user already exists
+  const existingUser = await getUser(username);
+  if (existingUser) {
+    return res.status(400).send({ status: 400, message: "Username already exists" });
+  }
+  // check if email already exists
+  const existingEmail = await getUserByEmail(email);
+  if (existingEmail) {
+    return res.status(400).send({ status: 400, message: "Email already exists" });
+  }
+  
   const hashedPassword = await auth.hashPassword(password);
-
-  let newUser = addUser(username, email, hashedPassword);
+  const newUser = await addUser(username, email, hashedPassword);
   const token = auth.generateToken(newUser);
   res
     .status(200)
@@ -43,7 +52,6 @@ router.post("/auth/login", async (req, res) => {
   }
 
   const dbUser = await getUser(username);
-  console.log(dbUser);
 
   if (!dbUser) {
     console.log("User not found");

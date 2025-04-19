@@ -8,15 +8,11 @@ const login = async (username, password) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include', // Include cookies in the request
+    credentials: 'include',
     body: JSON.stringify({ username, password }),
   });
 
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
-
-  isAuthenticated.set(true); // Set the authentication status to true
+  isAuthenticated.set(true);
   const data = await response.json();
   return data;
 }
@@ -30,9 +26,6 @@ const register = async (username, email, password) => {
     credentials: 'include',
     body: JSON.stringify({ username, email, password })
   });
-  if (!response.ok) {
-    throw new Error('Register failed');
-  }
 
   isAuthenticated.set(true);
   const data = await response.json();
@@ -45,18 +38,16 @@ const logout = async () => {
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include', // Include cookies in the request
+    credentials: 'include',
   });
 
   if (!response.ok) {
     throw new Error('Logout failed');
   }
 
-  isAuthenticated.set(false); // Set the authentication status to false
+  isAuthenticated.set(false);
   return true;
 }
-
-
 
 export const auth = {
   login,

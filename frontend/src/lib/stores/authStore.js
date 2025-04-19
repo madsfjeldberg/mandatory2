@@ -1,18 +1,14 @@
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+
+// This store manages the authentication state of the user on the client side
+// It uses Svelte's writable store to create a reactive variable
+// isAuthenticated: boolean - true if the user is logged in, false otherwise
+// user: object - contains user information if logged in, null otherwise
 
 export const isAuthenticated = writable(false);
+export const user = writable(null);
 
-export const checkAuth = () => {
-  console.log('Checking authentication status...');
-  console.log('Browser environment:', browser);
-  console.log('Document:', document);
-  console.log('Document cookie:', document.cookie);
-  
-  if (!browser) return false;
-    // Ensure this runs only in the browser
-    // Check if the JWT cookie is present
-    const hasCookie = document.cookie.includes('jwt=');
-    isAuthenticated.set(hasCookie);
-    return hasCookie;
-};
+export const updateAuthState = (userData) => {
+  isAuthenticated.set(!!userData);
+  user.set(userData);
+}

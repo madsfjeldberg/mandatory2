@@ -3,12 +3,19 @@
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, DarkMode } from 'flowbite-svelte';
   import { Footer, FooterBrand, FooterCopyright, FooterIcon, FooterLink, FooterLinkGroup } from 'flowbite-svelte';
   import toast, { Toaster } from 'svelte-french-toast';
-  import { isAuthenticated } from '$lib/stores/authStore';
+  import { isAuthenticated, updateAuthState } from '$lib/stores/authStore';
   import { auth } from '$lib/services/auth.js';
   import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 
+  let { data, children } = $props();
+
   const year = new Date().getFullYear();
+
+  onMount(() => {
+    // on mount, check if user already has a token
+    updateAuthState(data.user);
+  })
 
   const handleLogout = async () => {
     await auth.logout();
@@ -16,7 +23,6 @@
     goto('/');
   };
 
-	let { children } = $props();
 </script>
 
 <Toaster />
@@ -31,9 +37,9 @@
   </div>
   <NavUl class="flex md:order-1 md:ml-auto">
     
-    <!-- Conditionally render navbar -->
     {#if $isAuthenticated}
     <NavLi href="/dashboard">Dashboard</NavLi>
+    <NavLi href="/settings">Settings</NavLi>
     <NavLi class="cursor-pointer" on:click={handleLogout}>Logout</NavLi>
     {:else}
     <NavLi href="/">Home</NavLi>

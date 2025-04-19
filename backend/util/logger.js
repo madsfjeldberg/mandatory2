@@ -7,6 +7,6 @@ morgan.token('body', (req) => {
   return JSON.stringify(req.body);
 });
 
-const logger = morgan(':method :url :status - :response-time ms - :date[iso] - :body');
+const logger = morgan(':method :url :status - :response-time ms - :date[iso]');
 
 export default logger;

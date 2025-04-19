@@ -13,12 +13,12 @@
     loginMode = !loginMode;
   }
 
-  let errors = {
+  let errors = $state({
     username: '',
     email: '',
     password: '',
     form: ''
-  }
+  })
 
   const RegisterRequest = z.object({
     username: z.string()
@@ -57,8 +57,8 @@
       } else {
         RegisterRequest.parse({ username, email, password});
         response = await auth.register(username, email, password);
+        console.log(response)
       }
-      console.log("response: ", response)
       if (response.status === 200) {
         if (loginMode) {
           await toast.success('Login successful!');
@@ -67,8 +67,10 @@
         }
         await goto('/dashboard');
         
+      } else if (response.status === 400) {
+        errors = { ...errors, form: response.message };
       } else {
-        errors.form = 'Login failed: Invalid credentials';
+        errors = { ...errors, form: 'Login failed: Invalid credentials' };
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
